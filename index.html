@@ -3,86 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCP 2025 | Asistente Vital</title>
+    <title>RCP Pro 2025</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <div class="brand">RCP <span class="year">2025</span></div>
+        <h1>RCP <span class="accent">2025</span></h1>
         <nav>
-            <button onclick="navTo('guia')" class="nav-btn">Guía</button>
-            <button onclick="navTo('simulador')" class="nav-btn">Simulador</button>
-            <button onclick="navTo('examen')" class="nav-btn">Examen</button>
+            <button onclick="changeView('guia')">Guía</button>
+            <button onclick="changeView('sim')">Simulador</button>
+            <button onclick="changeView('quiz')">Examen</button>
         </nav>
     </header>
 
     <main>
-        <!-- SECCIÓN 1: GUÍA PASO A PASO -->
-        <section id="guia" class="active">
-            <h2>Algoritmo de Atención</h2>
-            <div id="algoritmo-container">
-                <!-- Se inyecta desde JS -->
-            </div>
+        <section id="guia" class="view">
+            <h2>Algoritmo SVB 2025</h2>
+            <div id="algo-list"></div>
         </section>
 
-        <!-- SECCIÓN 2: SIMULADOR (Metrónomo + Cronómetro) -->
-        <section id="simulador" class="hidden">
-            <h2>Simulador de Ritmo</h2>
+        <section id="sim" class="view hidden">
+            <h2>Metrónomo y Ciclos</h2>
+            <div class="metro-box">
+                <div id="pulse" class="heart">❤️</div>
+                <div class="timer" id="cycle-timer">02:00</div>
+            </div>
+            <button id="start-rcp" class="btn-main">INICIAR RCP (110 LPM)</button>
+            <button id="stop-rcp" class="btn-danger hidden">DETENER</button>
+        </section>
+
+        <section id="quiz" class="view hidden">
+            <div id="quiz-container"></div>
             
-            <div class="card center-content">
-                <div id="visual-beat" class="heart-indicator">❤️</div>
-                <div class="bpm-display">110 LPM</div>
-                <p class="small-text">Meta: 100-120 cpm</p>
-            </div>
-
-            <div class="card center-content">
-                <h3>Ciclo de Reanimador</h3>
-                <div id="timer-display" class="timer-text">02:00</div>
-                <p class="small-text">Alerta sonora al finalizar para cambio de roles</p>
-            </div>
-
-            <div class="controls">
-                <button id="btn-start" class="btn-primary" onclick="startSimulation()">INICIAR RCP</button>
-                <button id="btn-stop" class="btn-danger" onclick="stopSimulation()" disabled>DETENER</button>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 3: EXAMEN Y VALIDACIÓN DOCENTE -->
-        <section id="examen" class="hidden">
-            <div id="quiz-intro">
-                <h2>Evaluación Certificada</h2>
-                <p>Responde 10 preguntas aleatorias basadas en las Guías 2025.</p>
-                <button class="btn-primary" onclick="startQuiz()">Comenzar Test</button>
-            </div>
-
-            <div id="quiz-content" class="hidden">
-                <div id="question-container"></div>
-                <div id="progress-bar">Pregunta <span id="q-current">1</span> de 10</div>
-            </div>
-
-            <!-- RESULTADOS Y ZONA DOCENTE -->
-            <div id="quiz-results" class="hidden">
-                <h3>Resultados</h3>
-                <div id="score-circle" class="score-badge">0/10</div>
-                <p id="feedback-msg"></p>
-
-                <div class="teacher-zone">
-                    <h4>🔐 Área Docente</h4>
-                    <p>Ingrese PIN para validar la nota:</p>
-                    <input type="password" id="teacher-pin" placeholder="PIN (6 dígitos)" maxlength="6">
-                    <button class="btn-secondary" onclick="verifyTeacher()">Validar</button>
-                    <div id="verification-msg"></div>
+            <!-- MODAL DE ESTADO PENDIENTE -->
+            <div id="status-overlay" class="overlay hidden">
+                <div class="modal">
+                    <h3>Examen Completado</h3>
+                    <p class="status-badge">ESTADO: PENDIENTE DE APROBACIÓN</p>
+                    <p>Llame al instructor para validar sus resultados.</p>
+                    <button class="btn-admin" onclick="showAdminLogin()">ACCESO DOCENTE</button>
                 </div>
+            </div>
 
-                <button class="btn-text" onclick="resetQuiz()">Reintentar Examen</button>
+            <!-- LOGIN DOCENTE -->
+            <div id="admin-login" class="overlay hidden">
+                <div class="modal">
+                    <h3>Validación Docente</h3>
+                    <input type="password" id="pin" placeholder="PIN de 6 dígitos">
+                    <button class="btn-main" onclick="verifyAdmin()">APROBAR NOTA</button>
+                </div>
+            </div>
+
+            <div id="final-score" class="hidden card">
+                <h3>Calificación Final</h3>
+                <div id="score-val" class="score-circle">0/10</div>
+                <p>✅ Verificado por Instructor</p>
             </div>
         </section>
     </main>
-
-    <footer>
-        <p>Basado en AHA/ILCOR 2025 Guidelines. Uso educativo.</p>
-    </footer>
-
     <script src="script.js"></script>
 </body>
 </html>
