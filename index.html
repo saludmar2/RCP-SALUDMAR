@@ -1,33 +1,88 @@
-<!-- Reemplaza la <section id="evaluacion"> anterior con esta versión mejorada -->
-<section id="evaluacion" class="hidden-section">
-    <div class="header-eval">
-        <h2>Evaluación Certificada 2025</h2>
-        <p>Responde las 10 preguntas. El orden es aleatorio.</p>
-    </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCP 2025 | Asistente Vital</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="brand">RCP <span class="year">2025</span></div>
+        <nav>
+            <button onclick="navTo('guia')" class="nav-btn">Guía</button>
+            <button onclick="navTo('simulador')" class="nav-btn">Simulador</button>
+            <button onclick="navTo('examen')" class="nav-btn">Examen</button>
+        </nav>
+    </header>
 
-    <div id="quiz-container">
-        <!-- Las preguntas se inyectan aquí -->
-    </div>
-
-    <!-- Panel de Resultados (Oculto al inicio) -->
-    <div id="result-area" class="hidden-section result-box">
-        <h3>Resultados del Alumno</h3>
-        <div class="score-circle" id="score-display">0/10</div>
-        <p id="feedback-text"></p>
-        
-        <hr>
-        
-        <!-- Zona de Verificación Docente -->
-        <div class="teacher-zone">
-            <h4>🔐 Verificación Docente</h4>
-            <p class="small-text">Ingrese el PIN para validar esta nota en el sistema.</p>
-            <div class="input-group">
-                <input type="password" id="teacher-pin" placeholder="PIN Docente" maxlength="6">
-                <button onclick="verifyScore()" class="btn-verify">Verificar</button>
+    <main>
+        <!-- SECCIÓN 1: GUÍA PASO A PASO -->
+        <section id="guia" class="active">
+            <h2>Algoritmo de Atención</h2>
+            <div id="algoritmo-container">
+                <!-- Se inyecta desde JS -->
             </div>
-            <div id="verification-message" class="hidden-section"></div>
-        </div>
-        
-        <button onclick="restartQuiz()" class="btn-secondary">Reintentar Prueba</button>
-    </div>
-</section>
+        </section>
+
+        <!-- SECCIÓN 2: SIMULADOR (Metrónomo + Cronómetro) -->
+        <section id="simulador" class="hidden">
+            <h2>Simulador de Ritmo</h2>
+            
+            <div class="card center-content">
+                <div id="visual-beat" class="heart-indicator">❤️</div>
+                <div class="bpm-display">110 LPM</div>
+                <p class="small-text">Meta: 100-120 cpm</p>
+            </div>
+
+            <div class="card center-content">
+                <h3>Ciclo de Reanimador</h3>
+                <div id="timer-display" class="timer-text">02:00</div>
+                <p class="small-text">Alerta sonora al finalizar para cambio de roles</p>
+            </div>
+
+            <div class="controls">
+                <button id="btn-start" class="btn-primary" onclick="startSimulation()">INICIAR RCP</button>
+                <button id="btn-stop" class="btn-danger" onclick="stopSimulation()" disabled>DETENER</button>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: EXAMEN Y VALIDACIÓN DOCENTE -->
+        <section id="examen" class="hidden">
+            <div id="quiz-intro">
+                <h2>Evaluación Certificada</h2>
+                <p>Responde 10 preguntas aleatorias basadas en las Guías 2025.</p>
+                <button class="btn-primary" onclick="startQuiz()">Comenzar Test</button>
+            </div>
+
+            <div id="quiz-content" class="hidden">
+                <div id="question-container"></div>
+                <div id="progress-bar">Pregunta <span id="q-current">1</span> de 10</div>
+            </div>
+
+            <!-- RESULTADOS Y ZONA DOCENTE -->
+            <div id="quiz-results" class="hidden">
+                <h3>Resultados</h3>
+                <div id="score-circle" class="score-badge">0/10</div>
+                <p id="feedback-msg"></p>
+
+                <div class="teacher-zone">
+                    <h4>🔐 Área Docente</h4>
+                    <p>Ingrese PIN para validar la nota:</p>
+                    <input type="password" id="teacher-pin" placeholder="PIN (6 dígitos)" maxlength="6">
+                    <button class="btn-secondary" onclick="verifyTeacher()">Validar</button>
+                    <div id="verification-msg"></div>
+                </div>
+
+                <button class="btn-text" onclick="resetQuiz()">Reintentar Examen</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Basado en AHA/ILCOR 2025 Guidelines. Uso educativo.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
