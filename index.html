@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente RCP 2025</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>RCP <span class="highlight">2025</span></h1>
+        <nav>
+            <button onclick="showSection('algoritmo')">Guía</button>
+            <button onclick="showSection('simulador')">Simulador</button>
+            <button onclick="showSection('evaluacion')">Test</button>
+        </nav>
+    </header>
+
+    <main id="app-container">
+        <!-- SECCIÓN 1: ALGORITMO -->
+        <section id="algoritmo" class="active-section">
+            <h2>Algoritmo de Atención</h2>
+            <div id="steps-container">
+                <!-- Se llenará con JS -->
+            </div>
+            <div class="info-box">
+                <p><strong>Recuerda:</strong> Cambia de reanimador cada 2 minutos para evitar fatiga [10].</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: SIMULADOR (METRÓNOMO) -->
+        <section id="simulador" class="hidden-section">
+            <h2>Asistente de Ritmo</h2>
+            <div class="metro-visual" id="visual-indicator">
+                <span class="heart-icon">❤️</span>
+            </div>
+            
+            <div class="controls">
+                <p>Meta: <strong>110 lpm</strong> (Rango: 100-120 [11])</p>
+                <button id="btn-start" class="btn-primary">Iniciar RCP</button>
+                <button id="btn-stop" class="btn-secondary" disabled>Detener</button>
+            </div>
+
+            <div class="timer-container">
+                <h3>Ciclo de Reanimador</h3>
+                <div id="cycle-timer">02:00</div>
+                <p class="small-text">Alerta sonora al finalizar para cambio de roles.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: EVALUACIÓN -->
+        <section id="evaluacion" class="hidden-section">
+            <h2>Evaluación Teórica</h2>
+            <div id="quiz-container">
+                <!-- Preguntas inyectadas por JS -->
+            </div>
+            <div id="result-area" class="hidden-section"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Basado en guías AHA/ILCOR 2025. Uso educativo.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
