@@ -76,3 +76,26 @@
     <script src="script.js"></script>
 </body>
 </html>
+<!-- Agregar este botón en la etiqueta <nav> -->
+<button onclick="showView('biblioteca')" class="nav-btn">Videos</button>
+
+<!-- Agregar esta nueva sección dentro de <main> -->
+<section id="biblioteca" class="view hidden">
+    <h2>La Ciencia de Salvar Vidas</h2>
+    <div class="card video-container">
+        <!-- Reemplaza 'URL_DEL_VIDEO' con el enlace real (ej. YouTube) -->
+        <iframe 
+            width="100%" 
+            height="315" 
+            src="https://www.youtube.com/embed/VIDEO_ID" 
+            title="La Ciencia de Salvar Vidas" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+    </div>
+    <div class="card">
+        <h3>¿Por qué es importante este video?</h3>
+        <p>Las guías 2025 enfatizan que la educación en reanimación debe ser dinámica y apoyada por tecnología para asegurar una <strong>RCP de alta calidad</strong> [3, 6].</p>
+    </div>
+</section>
