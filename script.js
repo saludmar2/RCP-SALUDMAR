@@ -1,81 +1,92 @@
-let currentScore = 0;
-let answered = 0;
+let metroInterval, timerInterval, rcpActive = false;
+let currentQuestions = [], aciertos = 0, questionIndex = 0;
 const ADMIN_PIN = "174506";
-let metroInterval, timerInterval;
 
-// 1. Navegación
-function changeView(id) {
+// NAVEGACIÓN
+function showView(id) {
     document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
-    if(id === 'guia') renderAlgo();
-    if(id === 'quiz') startQuiz();
+    if(id === 'guia') renderGuia();
 }
 
-// 2. Renderizar Algoritmo
-function renderAlgo() {
-    const list = document.getElementById('algo-list');
-    list.innerHTML = rcpData.algoritmo.map(a => `
+function renderGuia() {
+    const container = document.getElementById('algo-container');
+    container.innerHTML = RCP_DATA.algoritmo.map(a => `
         <div class="card"><strong>${a.paso}. ${a.titulo}</strong><br>${a.desc}</div>
     `).join('');
 }
 
-// 3. Simulador (110 LPM)
-function startSimulation() {
-    let timeLeft = 120; // 2 minutos [12]
-    document.getElementById('start-rcp').classList.add('hidden');
-    document.getElementById('stop-rcp').classList.remove('hidden');
+// SIMULADOR (110 LPM)
+function toggleRCP() {
+    if(!rcpActive) {
+        rcpActive = true;
+        document.getElementById('start-btn').innerText = "DETENER";
+        document.getElementById('start-btn').style.background = "var(--red)";
+        
+        let timeLeft = 120; // 2 minutos
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            let s = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer').innerText = `${m}:${s}`;
+            if(timeLeft <= 0) { alert("¡TIEMPO! Cambio de reanimador [1, 2]."); timeLeft = 120; }
+        }, 1000);
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    metroInterval = setInterval(() => {
-        const osc = audioCtx.createOscillator();
-        osc.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-        const h = document.getElementById('pulse');
-        h.style.transform = "scale(1.3)";
-        setTimeout(() => h.style.transform = "scale(1)", 100);
-    }, 60000 / 110); // 110 LPM solicitado
-
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        const m = Math.floor(timeLeft / 60);
-        const s = timeLeft % 60;
-        document.getElementById('cycle-timer').innerText = `${m}:${s.toString().padStart(2,'0')}`;
-        if(timeLeft <= 0) {
-            alert("¡TIEMPO! Cambio de reanimador [12]");
-            timeLeft = 120;
-        }
-    }, 1000);
+        metroInterval = setInterval(() => {
+            const h = document.getElementById('beat');
+            h.style.transform = "scale(1.3)";
+            setTimeout(() => h.style.transform = "scale(1)", 100);
+            // Audio opcional: new Audio('click.mp3').play();
+        }, 60000 / 110);
+    } else {
+        location.reload();
+    }
 }
 
-// 4. Examen y Validación
-function startQuiz() {
-    const qList = rcpData.examen.sort(() => 0.5 - Math.random()).slice(0, 10);
-    const container = document.getElementById('quiz-container');
-    container.innerHTML = qList.map((q, i) => `
+// EXAMEN (10 PREGUNTAS SIN REPETIR)
+function startTest() {
+    currentQuestions = [...RCP_DATA.banco_preguntas].sort(() => 0.5 - Math.random());
+    questionIndex = 0; aciertos = 0;
+    document.getElementById('quiz-intro').classList.add('hidden');
+    document.getElementById('quiz-box').classList.remove('hidden');
+    showQuestion();
+}
+
+function showQuestion() {
+    if(questionIndex >= 10) { 
+        document.getElementById('pending-screen').classList.remove('hidden');
+        return; 
+    }
+    const q = currentQuestions[questionIndex];
+    document.getElementById('question-content').innerHTML = `
         <div class="card">
-            <p>${i+1}. ${q.p}</p>
-            ${q.ops.map((o, j) => `<button onclick="check(${j}, ${q.corr}, this)">${o}</button>`).join('')}
+            <h3>Pregunta ${questionIndex+1} de 10</h3>
+            <p>${q.p}</p>
+            ${q.ops.map((o, i) => `<button onclick="checkAns(${i}, ${q.corr})" class="btn-main" style="margin-bottom:10px; background:#e3f2fd; color:black;">${o}</button>`).join('')}
         </div>
-    `).join('');
+    `;
 }
 
-function check(sel, corr, btn) {
-    if(sel === corr) { currentScore++; btn.style.background = "#c8e6c9"; }
-    else { btn.style.background = "#ffcdd2"; }
-    answered++;
-    btn.parentElement.querySelectorAll('button').forEach(b => b.disabled = true);
-    if(answered === 10) document.getElementById('status-overlay').classList.remove('hidden');
+function checkAns(idx, corr) {
+    if(idx === corr) aciertos++;
+    questionIndex++;
+    showQuestion();
 }
 
-function verifyAdmin() {
-    if(document.getElementById('pin').value === ADMIN_PIN) {
+// SISTEMA ADMINISTRADOR
+function showAdmin() { document.getElementById('admin-login').classList.remove('hidden'); }
+function hideAdmin() { document.getElementById('admin-login').classList.add('hidden'); }
+
+function unlockResults() {
+    if(document.getElementById('pin-input').value === ADMIN_PIN) {
         document.getElementById('admin-login').classList.add('hidden');
-        document.getElementById('status-overlay').classList.add('hidden');
-        document.getElementById('final-score').classList.remove('hidden');
-        document.getElementById('score-val').innerText = `${currentScore}/10`;
-    } else { alert("PIN Incorrecto"); }
+        document.getElementById('pending-screen').classList.add('hidden');
+        document.getElementById('quiz-box').classList.add('hidden');
+        document.getElementById('results').classList.remove('hidden');
+        document.getElementById('score-circle').innerText = `${aciertos}/10`;
+        document.getElementById('final-feedback').innerText = aciertos >= 8 ? "¡Excelente! Aprobado." : "Repase los protocolos [3, 11].";
+    } else { alert("PIN INCORRECTO"); }
 }
 
-function showAdminLogin() { document.getElementById('admin-login').classList.remove('hidden'); }
-document.getElementById('start-rcp').onclick = startSimulation;
-document.getElementById('stop-rcp').onclick = () => location.reload();
+// INICIALIZACIÓN
+window.onload = () => showView('guia');
