@@ -3,61 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCP Pro 2025</title>
+    <title>RCP 2025: Asistente Educativo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <h1>RCP <span class="accent">2025</span></h1>
         <nav>
-            <button onclick="changeView('guia')">Guía</button>
-            <button onclick="changeView('sim')">Simulador</button>
-            <button onclick="changeView('quiz')">Examen</button>
+            <button onclick="showView('guia')">Guía</button>
+            <button onclick="showView('simulador')">Simulador</button>
+            <button onclick="showView('examen')">Examen</button>
         </nav>
     </header>
 
-    <main>
+    <main id="app">
+        <!-- GUÍA -->
         <section id="guia" class="view">
             <h2>Algoritmo SVB 2025</h2>
-            <div id="algo-list"></div>
+            <div id="algo-container"></div>
         </section>
 
-        <section id="sim" class="view hidden">
-            <h2>Metrónomo y Ciclos</h2>
-            <div class="metro-box">
-                <div id="pulse" class="heart">❤️</div>
-                <div class="timer" id="cycle-timer">02:00</div>
+        <!-- SIMULADOR -->
+        <section id="simulador" class="view hidden">
+            <div class="card center">
+                <div id="beat" class="heart-icon">❤️</div>
+                <div class="bpm-label">110 LPM</div>
+                <div id="timer" class="timer-display">02:00</div>
+                <button id="start-btn" onclick="toggleRCP()">INICIAR RCP</button>
             </div>
-            <button id="start-rcp" class="btn-main">INICIAR RCP (110 LPM)</button>
-            <button id="stop-rcp" class="btn-danger hidden">DETENER</button>
         </section>
 
-        <section id="quiz" class="view hidden">
-            <div id="quiz-container"></div>
+        <!-- EVALUACIÓN -->
+        <section id="examen" class="view hidden">
+            <div id="quiz-intro">
+                <h2>Evaluación Certificada</h2>
+                <button onclick="startTest()" class="btn-main">Comenzar Examen (10 Preguntas)</button>
+            </div>
             
-            <!-- MODAL DE ESTADO PENDIENTE -->
-            <div id="status-overlay" class="overlay hidden">
+            <div id="quiz-box" class="hidden">
+                <div id="question-content"></div>
+            </div>
+
+            <!-- ESTADO PENDIENTE -->
+            <div id="pending-screen" class="overlay hidden">
                 <div class="modal">
-                    <h3>Examen Completado</h3>
-                    <p class="status-badge">ESTADO: PENDIENTE DE APROBACIÓN</p>
-                    <p>Llame al instructor para validar sus resultados.</p>
-                    <button class="btn-admin" onclick="showAdminLogin()">ACCESO DOCENTE</button>
+                    <h2>📝 Examen Completado</h2>
+                    <div class="badge-pending">ESTADO: PENDIENTE DE APROBACIÓN</div>
+                    <p>Por favor, llame al instructor para validar su evaluación.</p>
+                    <button onclick="showAdmin()" class="btn-admin">Acceso Administrador</button>
                 </div>
             </div>
 
-            <!-- LOGIN DOCENTE -->
+            <!-- LOGIN ADMIN -->
             <div id="admin-login" class="overlay hidden">
                 <div class="modal">
-                    <h3>Validación Docente</h3>
-                    <input type="password" id="pin" placeholder="PIN de 6 dígitos">
-                    <button class="btn-main" onclick="verifyAdmin()">APROBAR NOTA</button>
+                    <h3>🔐 Validación Docente</h3>
+                    <input type="password" id="pin-input" placeholder="Ingrese PIN">
+                    <button onclick="unlockResults()" class="btn-main">Validar y Aprobar</button>
+                    <button onclick="hideAdmin()" class="btn-text">Cancelar</button>
                 </div>
             </div>
 
-            <div id="final-score" class="hidden card">
-                <h3>Calificación Final</h3>
-                <div id="score-val" class="score-circle">0/10</div>
-                <p>✅ Verificado por Instructor</p>
+            <!-- RESULTADOS -->
+            <div id="results" class="hidden card center">
+                <h2>Resultado Final</h2>
+                <div id="score-circle" class="score-ring">0/10</div>
+                <p id="final-feedback"></p>
+                <div class="verified-tag">✅ Aprobado por Instructor</div>
             </div>
         </section>
     </main>
